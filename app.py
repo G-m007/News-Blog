@@ -60,7 +60,7 @@ def fetch_news(query=None, language='en', sort_by='publishedAt', pageSize=100):
 st.set_page_config(page_title='Advanced News Aggregator', layout='wide')
 st.title('Advanced News Aggregator')
 
-# Custom CSS
+# Updated Custom CSS
 st.markdown("""
     <style>
     .stApp {
@@ -68,18 +68,53 @@ st.markdown("""
         background-attachment: fixed;
         background-size: cover;
     }
-    .news-title { color: #1E88E5; text-decoration: none; }
-    .news-source { color: #4CAF50; }
-    .news-date { color: #9E9E9E; }
-    .section-header {
-        background-color: rgba(0,0,0,0.7);
-        padding: 10px;
-        border-radius: 5px;
+    .news-card {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        display: flex;
         color: white;
-        margin: 20px 0;
+    }
+    .news-image {
+        width: 300px;
+        height: 200px;
+        object-fit: cover;
+    }
+    .news-content {
+        padding: 20px;
+        flex: 1;
+    }
+    .news-title {
+        color: #2196F3;
+        text-decoration: none;
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+    }
+    .news-source {
+        color: #4CAF50;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+    .news-date {
+        color: #9E9E9E;
+        font-size: 0.9rem;
+    }
+    .news-description {
+        color: #FFFFFF;
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+    .section-header {
+        color: white;
+        font-size: 1.8rem;
+        margin: 30px 0 20px 0;
+        font-weight: bold;
     }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Sidebar controls
 with st.sidebar:
@@ -123,38 +158,60 @@ if search_query:
         for article in news['articles']:
             display_article(article)
 else:
-    # Homepage content
-    # Top Headlines
+    # Breaking News Section
+    st.markdown("<h2 class='section-header'>Breaking News</h2>", unsafe_allow_html=True)
     top_news = fetch_top_headlines(pageSize=6)
-    if 'articles' in top_news:
-        st.markdown("<div class='section-header'><h2>Breaking News</h2></div>", unsafe_allow_html=True)
-        cols = st.columns(3)
-        for idx, article in enumerate(top_news['articles'][:6]):
-            with cols[idx % 3]:
-                if article.get('urlToImage'):
-                    st.image(article['urlToImage'], use_container_width=True)
-                st.markdown(f"<h4><a href='{article['url']}' target='_blank' class='news-title'>{article['title']}</a></h4>", unsafe_allow_html=True)
     
-    # Popular News
-    popular_news = fetch_news(sort_by='popularity', pageSize=6)
-    if 'articles' in popular_news:
-        st.markdown("<div class='section-header'><h2>Trending Stories</h2></div>", unsafe_allow_html=True)
-        for article in popular_news['articles']:
-            col1, col2 = st.columns([1, 2])
-            with col1:
-                if article.get('urlToImage'):
-                    st.image(article['urlToImage'], use_container_width=True)
-            with col2:
-                st.markdown(
-                    f"""
-                    <h3><a href="{article['url']}" class="news-title" target="_blank">{article['title']}</a></h3>
-                    <p><span class="news-source"><strong>Source:</strong> {article.get('source', {}).get('name', 'Unknown')}</span></p>
-                    <p><span class="news-date"><strong>Published:</strong> {article.get('publishedAt', 'Unknown date')[:10]}</span></p>
-                    <p>{article.get('description', 'No description available')}</p>
-                    """,
-                    unsafe_allow_html=True
-                )
-            st.markdown("<hr>", unsafe_allow_html=True)
+    if 'articles' in top_news:
+        for article in top_news['articles'][:6]:
+            st.markdown(
+                f"""
+                <div class='news-card'>
+                    <img src="{article.get('urlToImage', 'https://via.placeholder.com/300x200')}" 
+                         class="news-image" 
+                         onerror="this.src='https://via.placeholder.com/300x200'">
+                    <div class='news-content'>
+                        <a href="{article['url']}" class="news-title" target="_blank">
+                            {article['title']}
+                        </a>
+                        <div class="news-source">Source: {article.get('source', {}).get('name', 'Unknown')}</div>
+                        <div class="news-date">Published: {article.get('publishedAt', 'Unknown date')[:10]}</div>
+                        <div class="news-description">{article.get('description', 'No description available')}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    # Trending Stories Section
+    st.markdown("<h2 class='section-header'>Trending Stories</h2>", unsafe_allow_html=True)
+    popular_news = fetch_news(
+        query="trending",
+        sort_by='popularity',
+        pageSize=4,
+        language=languages[selected_language]
+    )
+
+    if 'articles' in popular_news and popular_news['articles']:
+        for article in popular_news['articles'][:4]:
+            st.markdown(
+                f"""
+                <div class='news-card'>
+                    <img src="{article.get('urlToImage', 'https://via.placeholder.com/300x200')}" 
+                         class="news-image" 
+                         onerror="this.src='https://via.placeholder.com/300x200'">
+                    <div class='news-content'>
+                        <a href="{article['url']}" class="news-title" target="_blank">
+                            {article['title']}
+                        </a>
+                        <div class="news-source">Source: {article.get('source', {}).get('name', 'Unknown')}</div>
+                        <div class="news-date">Published: {article.get('publishedAt', 'Unknown date')[:10]}</div>
+                        <div class="news-description">{article.get('description', 'No description available')}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
 # Auto-refresh
 st.markdown(
