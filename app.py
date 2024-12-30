@@ -5,7 +5,13 @@ from datetime import datetime, timedelta
 # API Configuration
 NEWS_API_ENDPOINT = 'https://newsapi.org/v2/everything'
 TOP_NEWS_ENDPOINT = 'https://newsapi.org/v2/top-headlines'
-NEWS_API_KEY = '3ca4fa08040e483ca5011b0e67efd0ad'
+
+# Get API key from secrets
+try:
+    NEWS_API_KEY = st.secrets["NEWS_API_KEY"]
+except Exception as e:
+    st.error("Please set up your API key in .streamlit/secrets.toml")
+    st.stop()
 
 # Helper function to display articles (moved to top)
 def display_article(article):
