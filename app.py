@@ -57,7 +57,7 @@ def fetch_news(query=None, language='en', sort_by='publishedAt', pageSize=100):
     return response.json()
 
 # Page configuration
-st.set_page_config(page_title='Advanced News Aggregator', layout='wide')
+st.set_page_config(page_title='NEWS ORBIT', layout='wide')
 st.title('Advanced News Aggregator')
 
 # Updated Custom CSS
