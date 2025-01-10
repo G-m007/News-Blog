@@ -1,4 +1,4 @@
-# Advanced News Aggregator
+# News Orbit
 
 A modern news aggregation application built with Streamlit and powered by NewsAPI. This app provides real-time access to breaking news and trending stories from various sources worldwide.
 
