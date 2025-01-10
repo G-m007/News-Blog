@@ -16,12 +16,5 @@ A modern news aggregation application built with Streamlit and powered by NewsAP
 - NewsAPI
 - HTML/CSS
 
-## Setup
-1. Clone the repository
-2. Install requirements: `pip install -r requirements.txt`
-3. Add your NewsAPI key to `.streamlit/secrets.toml`
-4. Run the app: `streamlit run app.py`
-
-## Note
-You'll need a NewsAPI key to run this application. Get one at [NewsAPI.org](https://newsapi.org)
+## Visit: https://newsorbit.streamlit.app/
 
